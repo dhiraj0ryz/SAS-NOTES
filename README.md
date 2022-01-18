@@ -1,12 +1,13 @@
 # SAS TUTORIAL FOR BEGINNERS TO ADVANCED - PRACTICAL GUIDE 
 
-I. SAS Modules
+*I. SAS Modules*
 - Base SAS - It is the most common SAS module. It is used for data manipulation such as filtering data, selecting, renaming or removing columns, reshaping data etc.
 - SAS/STAT - It runs popular statistical techniques such as Hypothesis Testing, Linear and Logistic Regression, Principal Component Analysis etc.
 - SAS/ACCESS - It lets you to read data from databases such as Teradata, SQL Server, Oracle DB2 etc.
 - SAS/GRAPH - You can create simple and complex graphs using this component.
 - SAS/ETS - You can perform time series forecasting such as ARIMA, Exponential Smoothing, Moving Average etc. using this module.
-II. Basic SAS Program
+
+*II. Basic SAS Program*
 - I. Rules for SAS statements
 - All SAS statements (except those containing data) must end with a  semicolon (;)
 - Any number of SAS statements can appear on a single line provided they are separated by a semicolon.
@@ -18,7 +19,7 @@ II. Basic SAS Program
 - The first character appearing in a name must be a letter (A, B, ...Z, a, b, ... z) or an underscore (_). Subsequent characters must be letters, numbers, or underscores. That is, no other characters, such as $, %, or & are permitted. Blanks also cannot appear in SAS names.
 - SAS names are not case sensitive, that is, they can be entered in lowercase, uppercase, or a mixture of the two. (SAS is only case sensitive within quotation marks.).
 
-- III. Rules for SAS variables
+*III. Rules for SAS variables*
 - If the variable in the INPUT statement is followed by a dollar sign ($), SAS assumes this is a character variable. Otherwise, the variable is considered as a numeric variable.
 Difference between 'PROC' steps and 'DATA' step
 - DATA Steps
@@ -27,7 +28,25 @@ Difference between 'PROC' steps and 'DATA' step
 - PROC Steps (Procedures)
 - Any portion of a SAS program that begins with a PROC statement and ends with a RUN statement is called a PROC Step or Procedures.
 - PROC steps are in-built programs that allow us to analyze the data contained in a SAS data set. PROC steps are used to calculate descriptive statistics, to generate summary reports, and to create summary graphs and charts.
-IMPORTING DATA INTO SAS
+
+*Example*
+
+/*A Simple SAS Program*/
+
+'''data temp;
+input name $ ID;
+cards;
+Sam 12
+Sandy 13
+Reno 11
+Farhan 10
+;
+proc print;
+run;'''
+
+
+
+*IMPORTING DATA INTO SAS*
 I. Entering Data Directly in SAS Program
 The keywords are as follows:
 1. DATA -  The DATA step always begins with a DATA statement. The purpose of the DATA statement is to tell SAS that you are creating a new data set i.e. outdata.
@@ -53,3 +72,5 @@ The main keywords used in the following program are :
 3. REPLACE - To overwrite an existing SAS data set.
 4. SHEET - To import a specific sheet from an excel workbook
 5. GETNAMES - To include variable names from the first row of data.
+
+
