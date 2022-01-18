@@ -33,7 +33,7 @@ Difference between 'PROC' steps and 'DATA' step
 
 /*A Simple SAS Program*/
 
-'''data temp;
+'''sh data temp;
 input name $ ID;
 cards;
 Sam 12
