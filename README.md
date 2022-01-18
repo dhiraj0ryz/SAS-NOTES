@@ -33,7 +33,9 @@ Difference between 'PROC' steps and 'DATA' step
 
 /*A Simple SAS Program*/
 
-'''sh data temp;
+'''sh 
+\\code
+data temp;
 input name $ ID;
 cards;
 Sam 12
@@ -42,8 +44,8 @@ Reno 11
 Farhan 10
 ;
 proc print;
-run;'''
-
+run;
+'''
 
 
 *IMPORTING DATA INTO SAS*
