@@ -1,5 +1,8 @@
 # SAS TUTORIAL FOR BEGINNERS TO ADVANCED - PRACTICAL GUIDE 
 
+
+1.01 - Beginner guide
+
 *I. SAS Modules*
 - Base SAS - It is the most common SAS module. It is used for data manipulation such as filtering data, selecting, renaming or removing columns, reshaping data etc.
 - SAS/STAT - It runs popular statistical techniques such as Hypothesis Testing, Linear and Logistic Regression, Principal Component Analysis etc.
@@ -231,23 +234,239 @@ INPUT age gender $ dept obs1 obs2 obs3;
 run;
 
 
+2.01 -  Important SAS Shortcuts for Productivity
 
 
 
+The following is a list of productivity boosting SAS keyboard shortcuts. It would bring efficiency in writing SAS programming code.
+
+Run or submit a program	F3 or F8
+Comment the selected code (/)	Ctrl + /
+Uncomment the selected code (/)	Ctrl + Shift + /
+Stop Processing or Cancel Submitted Statement	Ctrl + Break
+Convert selected text to upper case	Ctrl + Shift + U
+Convert selected text to lower case	Ctrl + Shift + L
+Find text	Ctrl + F
+Find and replace text	Ctrl + H
+Copy Selection	Ctrl + C
+Paste	Ctrl + V
+Cut Selection	Ctrl + X
+Go to a particular line	Ctrl + G
+To move curser to the matching DO/END statemen	Alt + [ or Alt + ]
+To move cursor to matching brace/parentheses	Ctrl + [ or Ctrl + ]
+Move to beginning of line	Home
+Move to top	CTRL+Home
+Move to end	CTRL+End
+To close the active window	CTRL+F4
+To exit the SAS system	ALT+F4
+
+Important Shortcuts that work only in SAS Enterprise Guide
+
+Description	Shortcut Key
+Ctrl+End	Go to the last record, last column
+Ctrl+Home	Go to the first record, first column
+Ctrl+G	Go to specific row or column
+Ctrl + right arrow	Move to last column
+Ctrl + left arrow	Move to first column
+F2	Rename dataset
+Ctrl + I	Format ugly code (Select the code and press Ctrl I)
 
 
+Other Useful SAS Keyboard Shortcuts
+
+Description	Shortcut Key
+Bring up word tip	Alt + F1 + No Selection
+Hide the current word tip	Esc
+Collapse all folding blocks	Alt + Ctrl + Number pad -
+Expand all folding blocks	Alt + Ctrl + Number pad +
+Execute the last recorded macro	Ctrl + F1
+Undo edit	Ctrl + Z
+Redo edit	Ctrl + Y
+Clear window	Ctrl + E
+Paste program below	F4
+Get Help for a SAS procedure	Place the cursor within a procedure name and press F1
+Context Help	F1
+Move cursor to next case change	Alt + Right
+Move cursor to previous case change	Alt + Left
+File window	Ctrl + Q
+Explorer window	Ctrl + W
+Titles window	Ctrl + T
+System options window	Ctrl + I
+Open file window	Ctrl + O
+Save as window	Ctrl + S
+Active libraries window	Ctrl + D
+Select all	Ctrl + A
+Clean up white space	Ctrl + Shift + W
+Comment the selection with line comments	Ctrl + /
+Undo the Comment	Ctrl + Shift + /
+Convert the selected text to lowercase	Ctrl + Shift + L
+Convert the selected text to uppercase	Ctrl + Shift + U
+Submit selected code	F8
+Log	F6
+Output	F7
+Editor	F8
+Keys	F9
+Next Window	Ctrl + Tab
+Tile	Shift + F4
+Cascade	Shift + F5
+Next window	Ctrl + F6
+
+How to create keyboard shortcuts in SAS
+
+Open the Enhanced Editor window within SAS.
+From the toolbar, select Tools --> Options --> Keys.
+Scroll down to the keystroke you would like to assign to the series of commands, looking for a keystroke that has no assignment.
+Add the command code under the definition heading. For example: log; clear; output;clear;
+Close the Keys window.
 
 
+3.01 - Base SAS Tutorials
+
+SAS : READ CHARACTER VARIABLE OF VARYING LENGTH
+
+Method I : Use COLON Modifier
+We can use colon modifier : to tell SAS to read variable "Name" until there is a space or other delimiter. The  $30. defines the variable as a character variable having max length 30.
+
+*Example - to define length of variable (Name :$30.)
+
+input ID Name :$30. Score;
+cards;
+1 DeepanshuBhalla 22
+2 AttaPat 21
+3 XonxiangnamSamnuelnarayan 33
+;
+proc print noobs;
+run;
+
+*Example - to define length of variable, using $ - does not delimit comma in fee (1,000)*
+
+data ex2;
+input ID Name:$30. Score fee:$10.;
+cards;
+1 DeepanshuBhalla 22 1,000
+2 AttaPat 21 2,000
+3 XonxiangnamSamnuelnarayan 33 3,000
+;
+run;
 
 
+*Example - to define length of variable, using comma - will delimit comma removes it ( fee - 1000)*
+
+comma5. informat removes comma and store it as a numeric variable. 5 refers to width of the input field. To read bigger number like 3,000,000, you can use comma10.
+
+data ex2;
+input ID Name:$30. Score fee comma5.;
+cards;
+1 DeepanshuBhalla 22 1,000
+2 AttaPat 21 2,000
+3 XonxiangnamSamnuelnarayan 33 3,000
+;
+run;
+
+Method II : Use LENGTH statement prior to INPUT Statement (Lengthy)
+
+In the following program, we use a length statement prior to input statement to adjust varying length of a variable. In this case, the variable Name would be read first. Use only $ instead of $30. after "Name" in INPUT statement. 
+
+It changes the order of variables as the variable Name would be read first. 
 
 
+data example2;
+length Name $30.;
+input ID Name $ Score;
+cards;
+1 DeepanshuBhalla 22
+2 AttaPat 21
+3 XonxiangnamSamnuelnarayan 33
+;
+proc print noobs;
+run;
+
+Method III : Use Ampersand (&) and Put Extra Space
+
+We can use ampersand (&) to tell SAS to read the variable until there are two or more spaces as a delimeter. This technique is very useful when the variable contains two or more words. For example, if we have observation like "Deepanshu Bhalla" rather than "DeepanshuBhalla".
 
 
+*Example - to define length of variable, using & before $ to delimit - space
+
+data example1;
+input ID Name & $30. Score;
+cards;
+1 DeepanshuBhalla  22
+2 AttaPat  21
+3 XonxiangnamSamnuelnarayan  33
+;
+proc print noobs;
+run;
+
+Example II : When a variable contains more than 1 word
+
+In this case, we have a space between First Name and Last Name and we want to store both the first and last names in a single variable.
+
+In this case, the following methods do not work.
+
+Colon modifier (:) does not work for a variable having multiple words
+ LENGTH Statement prior to INPUT Statement does not work here.
+
+data example1;
+input ID Name & $30. Score;
+cards;
+1 Deepanshu Bhalla  22
+2 Atta Pat  21
+3 Xonxiangnam Samnuelnarayan  33
+;
+proc print noobs;
+run;
+
+*Example - reading data from external file.
+
+data temp;
+infile "C:\Users\Deepanshu\Desktop\file1.txt";
+input ID Name & $30. Score;
+proc print noobs;
+run;
+
+4.01 -SAS : CREATING OR MODIFYING A VARIABLE
+
+I. Creating a numeric variable
+
+You create variables using the form:  variable = expression;
+
+Suppose you are asked to create a new variable NewPrice, in the existing SAS data set Example1.
+Both variables are numeric. The variable NewPrice is twice of OldPrice.
+
+*Example - creating a new numerical veriable*
+
+DATA Example1;
+SET Example1;
+NewPrice=2*OldPrice;
+RUN;
+
+II. Creating a character variable
+
+In the same dataset Example1, let's create a character variable say Type. The character value for set is set 'Good'.
+
+*Example - creating a new character variable*
+DATA Example1;
+SET Example1;
+Type = 'Good';
+RUN;
+
+III. Creating or Modifying a variable
+
+Suppose the value of OldPrice is increased by 5 units and you need to calculate the relative change in price. In this case, we are modifying the existing variable OldPrice so we will add 5 to OldPrice. later we calculate the percentage change between old and new price.
 
 
+*Example - Creating or Modifying a variable*
 
+DATA Readin;
+SET Example1;
+OldPrice=5 + OldPrice;
+NewPrice=OldPrice*2;
+Change= ((NewPrice-OldPrice)/ OldPrice);
+Format Change Percent10.0;
+RUN;
 
+The FORMAT statement is used to display the change value in percentage format. In this case, we are creating a new dataset as well.
 
 
 
