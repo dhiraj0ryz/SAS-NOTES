@@ -469,6 +469,539 @@ RUN;
 The FORMAT statement is used to display the change value in percentage format. In this case, we are creating a new dataset as well.
 
 
+5.01 - DROPPING VARIABLES FROM A DATA SET IN SAS
+
+n SAS, there are two ways to handle dropping variables :
+1.  DROP = data set option
+2. DROP statement
+
+*Example- Base*
+
+DATA outdata; 
+   INPUT age gender $ dept obs1 obs2 obs3; 
+   DATALINES; 
+1 F 3 17 6 24
+1 M 1 19 25 7
+3 M 4 24 10 20
+3 F 2 19 23 8
+2 F 1 14 23 12
+2 M 5 1 23 9
+3 M 1 8 21 7
+1 F 1 7 7 14
+3 F 2 2 1 22
+1 M 5 20 5 2
+3 M 4 21 8 18
+1 M 4 7 9 25
+2 F 5 10 17 20
+3 F 4 21 25 7
+3 F 3 9 9 5
+3 M 3 7 21 25
+2 F 1 1 22 13
+2 F 5 20 22 5
+;
+proc print;
+run;
+
+I.  Scenario : Create a new variable based on existing data and then drops the irrelevant variables ( Using Drop Statement).
+
+By using the DROP statement, we can command SAS to drop variables only at completion of the DATA step.
+
+*Example - Using drop statement after completion of data step( to extract relevant data in new colomn before dropping).* 
+
+data readin;
+set outdata;
+totalsum = sum(obs1,obs2,obs3);
+drop obs1 obs2 obs3;
+run;
+
+In this case drop = option is not recommendable because the variables obs1,obs2 and obs3 are not available for use after data set outdata has been copied into the new data set readin . Hence totalsum would contain missing values only.
+
+data readin;
+set outdata (drop = obs1 obs2 obs3);
+totalsum = sum(obs1,obs2,obs3);
+run;
+
+II. DROP statement can be used anywhere in DATA steps whereas DROP = option must follow the SET statement.
+
+*Example - Using DROP statement to drop variables* 
+/ Commnd to drop age and show variables in which gender= age/
+
+data readin;
+set outdata;
+if gender = 'F';
+drop age;
+run;
+
+*Example - Using DROP = Option to drop variables using SET statement* 
+/ Commnd to drop age and show variables in which gender= age/
+data readin;
+set outdata (drop = age);
+if  gender = 'F';
+run;
+
+6.01 - SAS : IF-THEN-ELSE STATEMENTS
+Symbolic	Mnemonic	Meaning	Example
+=	EQ	equals	IF gender = ‘M’; or
+			
+			IF gender EQ ‘M’;
+^= or ~=	NE	not equal	IF salary NE . ;
+> 	GT	greater than	IF salary GT 4500;
+< 	LT	less than	IF salary LT 4500;
+>=	GE	greater than or equal	IF salary GE 4500;
+<=	LE	less than or equal	IF salary LE 4500;
+in	IN	selecting multiple values	IF country IN(‘US’ ’IN’);
+
+1. IF statement
+IF (condition is true) => It means subsetting a dataset.
+*Example - If statement - true condition* 
+
+LE - less than equal to 
+LT - less than 
+
+Data readin;
+Input ID Q1-Q3;
+cards;
+85 1 2 3
+90 3 4 6
+95 5 5 6
+100 6 6 4
+105 5 5 6
+110 6 6 5
+;
+
+Data readin1;
+Set readin;
+IF ID LE 100;
+run; 
+
+2. IF-THEN DELETE
+IF (condition is true) THEN (delete the selected observations);
+*Example - IF-THEN DELETE*
+Data readin;
+Input ID Q1-Q3;
+cards;
+85 1 2 3
+90 3 4 6
+95 5 5 6
+100 6 6 4
+105 5 5 6
+110 6 6 5
+;
+
+Data readin1;
+Set readin;
+IF ID GT 100 THEN DELETE;
+run; 
+
+II. IF-THEN-ELSE Statement
+
+Task 2: Suppose you want to set a tag on all the IDs. The condition is :
+
+If value of ID is less than or equal to 100 set "Old" tag otherwise set "New" tag.
+
+IF (condition is true) THEN (perform this action);
+ELSE (perform the action that is set when condition is false);
+
+*Example - If - Else statement*
+Data readin;
+Input ID Q1-Q3;
+cards;
+85 1 2 3
+90 3 4 6
+95 5 5 6
+100 6 6 4
+105 5 5 6
+110 6 6 5
+;
+
+Data readin1;
+Set readin;
+IF ID LE 100 THEN TAG ="Old";
+ELSE TAG ="New";
+run;
+
+III. IF-THEN-ELSE IF Statement
+
+Task 3: Suppose you are asked to update the TAG column.
+The conditions for tagging are as follows :
+If value of ID is less than 75 then TAG = "Old"
+If value of ID is greater than or equal to 75 and less than 100 then TAG = "New"
+If value of ID is greater than or equal to 100 then TAG = "Unchecked"
+IF (condition is true) THEN (perform this action);
+ELSE IF (perform the action when second condition is true);
+ELSE IF (perform the action when third condition is true);
+
+*Example - If - Else IF statement* 
+( Length Tag $20 is used to define length of character ( by default the length is 3)
+Data readin;
+Input ID Q1-Q3;
+cards;
+70 1 2 3
+45 1 2 3
+85 1 2 3
+25 1 2 3
+90 3 4 6
+95 5 5 6
+100 6 6 4
+105 5 5 6
+110 6 6 5
+;
+
+Data readin1;
+Set readin;
+length TAG $20;
+IF ID < 75 THEN TAG ="Old";
+ELSE IF 75 <= ID < 100 THEN TAG = "New"; 
+ELSE IF ID >= 100 THEN TAG ="Unchecked";
+run; 
+
+
+Symbolic	Mnemonic	Meaning	Example
+&	AND	Both conditions true	IF gender =’M’ and age =1;
+|	OR	Either condition true	IF gender =’M’ or age =1;
+~ or ^	NOT	Reverse the statement	IF country not IN(‘US’,’IN’);
+
+Task 4: Suppose you want to generate an analysis for Q1 including only responses that are valid (non-missing) and less than 3.
+
+*Example-logical operator*
+Data readin;
+Input ID Q1-Q3;
+cards;
+85 1 2 3
+90 . 4 6
+95 2 5 6
+100 6 6 4
+105 . 5 6
+110 6 6 5
+;
+
+Data readin1;
+Set readin;
+IF (Q1 LT 3) AND (Q1 NE .);
+run; 
+
+Selecting Multiple Observations :
+
+Suppose you want to set tag "Incorrect" to the specified IDs 1,5,45,76
+
+For this case, the logical statement would look like any one of the following statements. It can be written in three ways shown below.
+
+*Example - Selecting multiple Observations*
+
+Method 1  - IF Q1  in (1 5 3) then Tag="Uncategorised";
+Method 2 -  IF Q1=1 or Q1=5 or Q1=3 then Tag="Uncategorised";
+Method 3 - IF Q1  in (1, 5, 3) then Tag="Uncategorised";
+
+Data readin1;
+Set readin;
+Length Tag $20.;
+IF Q1 or Q2 or Q3 in (1 5 3) then Tag="fnk u";
+proc print;
+run;
+
+(IN Operator
+
+IN operator is used to select multiple values of a variable. It is an awesome alternative to OR operator.)
+
+7.01 - SAS : WHERE STATEMENT AND DATASET OPTIONS
+
+Symbolic	Mnemonic	Meaning	Example
+=	EQ	equals	WHERE gender = ‘M’; or
+			
+			WHERE gender EQ ‘M’;
+^= or ~=	NE	not equal	WHERE salary NE . ;
+> 	GT	greater than	WHERE salary GT 4500;
+< 	LT	less than	WHERE salary LT 4500;
+>=	GE	greater than or equal	WHERE salary GE 4500;
+<=	LE	less than or equal	WHERE salary LE 4500;
+in	IN	selecting multiple values	WHERE country IN(‘US’ ’IN’);
+
+*Example - using Where statement *
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul A 77
+Priya B 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul A 95
+Sahul C 84
+Lahul C 44
+;
+run;
+
+data readin1;
+set readin;
+where Section EQ "A";
+run;
+
+Task2 : Suppose you want to select section A and B students. You know the variable Section contains information for students' sections.
+
+*Example - using Where statement (logical operatiors) *
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul A 77
+Priya B 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul A 95
+Sahul C 84
+Lahul C 44
+;
+run;
+
+data readin1;
+set readin;
+where Section IN ("A" "B");
+run;
+
+Task 3 : Suppose you want to select only those observations in which students did not fill their section information.
+
+*Example - using Where statement to find missing values*
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul . 77
+Priya . 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul . 95
+Sahul C 84
+Lahul C 44
+;
+run;
+
+data readin1;
+set readin;
+where Section is missing;
+run;
+
+Note - Missing value does not give output in print format.
+
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+;
+run; ( include this while using  command for output data) 
+
+data readin1;
+set readin;
+where Section is missing;
+run;
+
+Task 4 : Suppose you want to select only those observations in which students filled their section information. 
+
+*Example - using Where statement to find Non-Missing Values values*
+ 
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul . 77
+Priya . 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul . 95
+Sahul C 84
+Lahul C 44
+;
+run;
+
+data readin1;
+set readin;
+where section is not missing;
+run;
+
+The NOT operator can be used within WHERE statement in many ways :
+
+1. where section is missing and score is not missing;
+
+2. where not (score in (34,44,84));
+
+3. where not (Score between 50 and 75);
+
+4. where NOT(Section EQ "A"); 
+
+CONTAINS Operator : Searching specific character
+Task 5 : Suppose you want to select only those observations in which students' name contain 'hul'.
+
+*Example - using Where statement to Search specific character*
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul . 77
+Priya . 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul . 95
+Sahul C 84
+Lahul C 44
+;
+run;
+
+data readin1;
+set readin;
+where name contains 'hul';
+run;
+
+where name contains 'hul' => This would tell SAS to select observations having the values Rahul, Sahul and Lahul for the variable NAME.
+
+Note : The CONTAINS operator is case sensitive.
+
+LIKE Operator : Pattern Matching
+
+The LIKE operator selects observations by comparing the values of a character variable to a specified pattern. It is case sensitive.
+
+Task6 : To select all students with a name that starts with the letter S.
+
+There are two special characters available for specifying a pattern:
+
+1. percent sign (%) - Wildcard Character
+
+2. underscore ( _ ) - Fill in the blanks
+
+
+*Example - using (% -  Wildcard Character)  to Search pattern matching character*
+Note : to find name starting with S 
+Use S% ( vice-versa)
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul . 77
+Priya . 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul . 95
+Sahul C 84
+Lahul C 44
+Pahulk A 81
+;
+run;
+
+data readin1;
+set readin;
+where name like 'S%';
+run;
+
+
+*Example - using  ( _ - Underscore )  to Search pattern matching character*
+ Note : to find  wolf using _ ( use '__lf' or 'wo__' 2 underscore for 2 missing values)
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul . 77
+Priya . 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul . 95
+Sahul C 84
+Lahul C 44
+Pahulk A 81
+;
+run;
+data readin1;
+set readin;
+where name like '_lf';
+run;
+
+
+Sounds-like Operator : Selecting sound like characters
+Task7 : To select names that sound like 'Ram'.
+
+*Example - to Search Sounds-like Operator*
+
+data readin;
+input name $ Section $ Score;
+cards;
+Tom  A 84
+Raj  A 80
+Ram  B 71
+Atul . 77
+Priya . 45
+Sandy A 67
+Sam  A 57
+David B 39
+Wolf B 34
+Rahul . 95
+Sahul C 84
+Lahul C 44
+Pahulk A 81
+Rama A 84
+;
+run;
+
+data readin1;
+set readin;
+where name = *'Ram';
+run;
+
+WHERE = Data Set Option
+
+1. In the example shown below, the WHERE= data set option is used to select only section A data.
+
+data readin1 (where = (section ='A'));
+set readin;
+run;
+
+2. The following example shows how to use WHERE= data set option in procedures 
+
+proc print data=readin (where=(section='A'));
+run;
+
+In this case, you can also use WHERE statement....
+
+proc print data=readin;
+where section='A';
+run;
+
+
+
+
+
+
 
 
 
