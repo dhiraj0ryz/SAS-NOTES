@@ -998,9 +998,81 @@ where section='A';
 run;
 
 
+8.01 - SAS : WHERE VS. IF STATEMENTS
 
+WHERE condition wins against IF condition in the following cases :
 
+1. The WHERE statement can be used in procedures to subset data while IF statement cannot be used in procedures.
 
+2. WHERE can be used as a data set option while IF cannot be used as a data set option.
+
+3. The WHERE statement is more efficient than IF statement. It tells SAS not to read all observations from the data set.
+
+4. The WHERE statement can be used to search for all similar character values that sound alike while IF statement cannot be used.
+
+IF condition wins against WHERE condition in the following cases :
+
+1. When reading data using INPUT statement.
+
+IF Statement
+
+1. IF Statement can be used when specifying an INPUT statement.
+
+2. When it is required to execute multiple conditional statements
+
+Suppose, you have data for college students’ mathematics scores. You want to rate them on the basis of their scores.
+
+Conditions :
+1. If a score is less than 40, create a new variable named “Rating” and give “Poor” rating to these students.
+2. If a score is greater than or equal to 40 but less than 75, give “Average” rating to these students.
+3. If a score is greater than or equal to 75 but less than or equal to 100, give “Excellent” rating to these students.
+
+This can be easily done using IF-THEN-ELSE IF statements. However, WHERE statement requires variables to exist in the data set.
+
+3. When it is required to use newly created variables in data set.
+
+IF statement can be applied on a newly created variable whereas WHERE statement cannot be applied on a newly created variable. In the below example, IF statement doesn't require variables to exist in the READIN data set while WHERE statement requires variable to exist in the data set.
+
+4. When to Use _N_, FIRST., LAST. Variables
+
+WHERE statement cannot be applied on automatic variables such as _N_, First., Last. Variables. While IF statement can be applied on automatic variables.
+
+Difference : WHERE and IF when merging data sets
+WHERE statement applies the subset condition before merging the data sets, Whereas, IF statement applies the subset condition after merging the data sets.
+
+Create 2 Sample Datasets for Merging
+data ex1;
+input ID Score;
+cards;
+1 25
+2 28
+3 35
+4 45
+;
+run;
+data ex2;
+input ID Score;
+cards;
+1 95
+2 97
+;
+run;
+
+Merge with WHERE Condition
+data comb;
+merge ex1 ex2;
+by ID;
+where score <= 30;
+run;
+It returns 2 observations. WHERE condition applied before merging. It applies separately on each of the 2 data sets before merging.
+
+Merge with IF Condition
+data comb;
+merge ex1 ex2;
+by ID;
+if score <= 30;
+run;
+It returns 0 observation as IF condition applied after merging. Since there is no observation in which value of score is less than or equal to 30, it returns zero observation.
 
 
 
