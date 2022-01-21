@@ -1074,23 +1074,195 @@ if score <= 30;
 run;
 It returns 0 observation as IF condition applied after merging. Since there is no observation in which value of score is less than or equal to 30, it returns zero observation.
 
+9.01 - PROC FREQ EXPLAINED WITH EXAMPLES
+
+Create a sample data set
+
+The program below creates a sample SAS dataset which would be used in further examples to explain PROC FREQ.
+data example1;
+input x y $ z;
+cards;
+6 A 60
+6 A 70
+2 A 100
+2 B 10
+3 B 67
+2 C 81
+3 C 63
+5 C 55
+;
+run;
+
+Example 1 : To check the distribution of a categorical variable (Character)
+
+Suppose you want to see the frequency distribution of variable 'y'.
+
+*Example - to check frequency distribution of variable*
+proc freq data = example1;
+tables y;
+run;
+
+The TABLES statements tells SAS to return n-way frequency and crosstabulation tables and computes the statistics for these tables.
+
+It answers a question 'which category holds the maximum number of cases'. In this case, the category 'C' contains maximum number of values.
+
+TIP:
+Categorical variables are of two types - Nominal and Ordinal. A nominal variable is a categorical variable in which categories do not have any order. For example, gender, city etc. An ordinal categorical variable has categories that can be ordered in a meaningful way. For example, rank, status (high/medium/low) etc
+
+Example 2 : To remove unwanted statistics in the table
+
+Suppose you do not want cumulative frequency and cumulative percent to be displayed in the table. The option NOCUM tells SAS to not to return cumulative scores.
+
+*Example - to check frequency distribution of variable y (not including commulative freq)*
+
+proc freq data = example1;
+tables y /nocum;
+run;
+
+ If you want only frequency, not percent distribution and cumulative statistics.
+
+*Example - to check frequency distribution of variable y (not including commulative freq, no percent)*
+
+proc freq data = example1;
+tables y /nopercent nocum;
+run;
+
+Example 3 : Cross Tabulation ( 2*2 Table)
+Suppose you want to see the distribution of variable 'y' by variable 'x'.
+
+*Example - to check frequency distribution of variable y*x(cross tabulation)*
+
+proc freq data = example1;
+tables y * x;
+run; 
+
+Example 4 : Show Table in List Form
+
+proc freq data = example1;
+tables y * x / list;
+run;
+
+Example 5 : Hide Unwanted Statistics in Cross Tabulation
+ 
+ *Example - to check frequency distribution of variable y*x(hiding unwanted stats)*
+
+proc freq data = example1;
+tables y * x / norow nocol nopercent;
+run;
+The NOROW option hides row percentage in cross tabulation. Similarly, NOCOL option suppresses column percentage.
+
+Example 6 : Request Multiple Tables
+Suppose you want to generate multiple crosstabs. To accomplish it, you can run the command below-
+
+ *Example - to check frequency distribution of variable y*(X Z) (hiding unwanted stats)*
+
+proc freq data = example1;
+tables y * (x z) / norow nocol nopercent;
+run;
+The tables y*(x z) statement is equivalent to tables y*x y*z statement. In this case, it returns two tables - y by x and y by z.
+
+Example 7 : Number of Distinct Values
+
+The NLEVELS option is used to count number of unique values in a variable.
+
+proc freq data = example1 nlevels;
+tables y;
+run;
+In this case, it returns 3 for variable Y.
+
+Example 8 : Use WEIGHT Statement
+
+The WEIGHT statement is used when we already have the counts. It makes PROC FREQ use count data to produce frequency and crosstabulation tables.
+
+Data example2;
+input pre $ post $ count;
+cards;
+Yes Yes 30
+Yes No 10
+No Yes 40
+No No 20
+;
+run;
+proc freq data=example2;
+tables pre*post;
+weight count;run;
+
+Example 9 : Store result in a SAS dataset
+
+Suppose you wish to save the result in a SAS dataset instead of printing it in result window.
+
+proc freq data = example1 noprint;
+tables y *x / out = temp;
+run;
+
+The OUT option is used to store result in a data file. NOPRINT option prevents SAS to print it in results window.
 
 
+Example 10 : Run Chi-Square Analysis
+
+The CHISQ option provides chi-square tests of homogeneity or independence and measures of association between two categorical variables.  Also it helps to identify the statistically significant categorical variables that we should include in our predictive model. All the categorical variables with a chi-square value less than or equal to 0.05 are kept.
+
+ *Example - to check frequency distribution of variable y*x with chi-square analysis
+
+proc freq data = example1 noprint;
+tables y * x/chisq;
+output All out=temp_chi chisq;
+run; 
+
+Example 11 : Generate Bar Chart and Dot Plot
+
+The bar chart can be generated with PROC FREQ. To produce a bar chart for variable 'y', the plots=freqplot (type=bar) option is added. By default, it shows frequency in graph. In order to show percent, you need to add scale=percent. The ODS graphics ON statement tells SAS to produce graphs. Later we turn it off.
+
+ *Example - to Generate Bar Chart*
+
+Ods graphics on;Proc freq data=example1 order=freq;
+Tables y/ plots=freqplot (type=bar scale=percent);
+Run;
+Ods graphics off;
+
+Similarly, we can produce dot plot by adding type=dot. See the implementation below-
+
+ *Example - to Generate Dot Plot*
+
+Ods graphics on;
+Proc freq data=example1 order=freq;
+Tables y/ plots=freqplot (type=dot);
+Run;
+Ods graphics off;
 
 
+Example 12 : Include Missing Values in Calculation
+
+By default, PROC FREQ does not consider missing values while calculating percent and cumulative percent. The number of missing values are shown separately (below the table). Refer the image below.
+
+Proc freq data=sashelp.heart;
+Tables deathcause;
+Run; 
+
+By adding MISSING option, it includes missing value as a separate category and all the respective statistics are generated based on it.
+
+ *Example - to include missing values in proc freq*
 
 
+Proc freq data=sashelp.heart;
+Tables deathcause / missing;
+Run;
 
+Example 13 : Ordering / Sorting
 
+In PROC FREQ, the categories of a character variable are ordered alphabetically by default. For numeric variables, the categories are ordered from smallest to largest value.
 
+To sort categories on descending order by frequency (from largest to smallest count), add ORDER=FREQ option
 
+ *Example - ordering/sorting in proc freq*
 
+Proc freq data=sashelp.heart order = FREQ;
+Tables deathcause / missing;
+Run;
 
+It is generally advisable to show distribution of a nominal variable after sorting categories by frequency. For ordinal variable, it should be shown based on level of categories.
 
-
-
-
-
+To order categories based on a particular FORMAT, you can use order = FORMATTED option.
 
 
 
