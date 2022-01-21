@@ -1264,6 +1264,97 @@ It is generally advisable to show distribution of a nominal variable after sorti
 
 To order categories based on a particular FORMAT, you can use order = FORMATTED option.
 
+10.01 - SAS TIP : SPECIFY A LIST OF VARIABLES
+
+Create a dataset with a list of variables
+data dummy;
+input q1 q3 q4 q2 q6$ bu$ q5;
+cards;
+1 2 3 5 sa an 3
+2 4 3 6 sm sa 4
+6 5 3 8 cb na 3
+;
+run;
+
+How to specify a list of variables
+
+A single dash (-) is used to specify consecutively numbered variables. For example : q1-q4;
+
+A double dash (--) is used to specify variables based on the order of the variables as they appear in the file, regardless of the name of the variables.
+
+Explanation - example variables are in series q1,q2,q6,q4,q5 so if we command to find out single dash ( q1-q5) hence the output will not include q6 but in case of double dash q6 will be included because it comes in order of variables regardless of the name of the variables.
+
+data dummy1 (drop= q1--q5);
+set dummy;
+sum = sum(of q1-q4);
+sum1 = sum(of q1--q4);
+run;
+
+n the above program, q1-q4 includes q1,q2,q3 and q4, whereas q1--q4 includes q1,q3 and q4 only as they appear the same way in file.
+
+How to specify all NUMERIC variables
+
+data dummy1 (drop= q1--q5);
+set dummy;
+sum = sum(of _numeric_);
+run;
+
+How to use double dash in array
+
+The following program subtracts one from values in variables q1,q3 and q4.
+
+data dummy1;
+set dummy;
+array vars q1--q4;
+do over vars;
+vars = vars - 1;
+end;
+run;
+
+How to use numeric variables in array
+
+The following program subtracts one from values in numeric variables.
+
+data dummy1;
+set dummy;
+array vars _numeric_;
+do over vars;
+vars = vars - 1;
+end;
+run;
+
+More Dash Symbol Usage
+
+1. Print all NUMERIC variables from q1 through q6.
+proc print;
+var q1-numeric-q6;
+run;
+
+2.  Print all CHARACTER variables from q1 through q6.
+proc print;
+var q1-character-q6;
+run;
+
+3.  Print all CHARACTER variables.
+proc print;
+var _character_;
+run;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
