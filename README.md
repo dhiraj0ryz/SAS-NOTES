@@ -1822,20 +1822,129 @@ Output : COUNTW Function
  If you don't specify delimiter in the second parameter of COUNTW function, it would automatically special characters as a delimiter.
 
 
+13.01 - SAS DATE FORMATS AND INFORMATS
+
+Informats is used to tell SAS how to read a variable whereas Formats is used to tell SAS how to display or write values of a variable.
+
+Informats is basically used when you read or import data from either an external file (Text/Excel/CSV) or read in sample data which was created using CARDS/DATALINES statement. It is also used when you create a new variable in a dataset.
+
+Formats can be used in both Data Steps and PROC Steps whereas Informat can be used only in Data Steps. Let's understand by examples -
+
+Example 1 - Read Dates in SAS
+
+In the program below, we have used INFORMATS ddmmyy8. and ddymmyy10. to read dates in SAS. It creates a dataset called sampledata which is stored in WORK library.
+
+DATA sampledata;
+     INPUT @6 date1 ddmmyy8. @15 date2 ddmmyy10.;
+    CARDS;
+     30-12-16 30-12-2016
+  ;
+RUN;
+
+The INFORMATS ddmmyy8. is used to read 30-12-16 date and ddmmyy10. to read 30-12-2016 date. 
+In this case, 8 and 10 refers to width of the date.
 
 
+It returns 20818 as it is in SAS date value form. It is not meaningful if you look at the value. You cannot tell which date it is. To display in real date form, use FORMAT statement.
+	
+*Example - conversion of informat variables into format*
 
+DATA sampledata;
+INPUT @6 date1 ddmmyy8. @15 date2 ddmmyy10.;
+FORMAT date1 ddmmyy8. date2 ddmmyy10.;
+cards;
+30-12-16 30-12-2016
+;
+RUN;
+	
+How to read DD-MMM-YY format
 
+You can use date11. format for both DD-MMM-YY and DD-MMM-YYYY format.
 
+DATA temp;
+INPUT @6 dt date11.;
+FORMAT dt date11.;
+CARDS;
+10-oct-14
+;
+PROC PRINT NOOBS;
+RUN;
 
+	
+Example 2 - Display Today's Date
 
+The today() function can be used to generate current date.
 
+*Example - to find today's date*
 
+data _null_;
+dt=today();
+format dt yymmdd10.;
+put dt ;
+run;
 
+Result : It returns 2016-12-30 as 30DEC2016 is the today's date. It's in YYYY-MM-DD format because we've used yymmdd10. format. The 10 refers to the width of the date as 2016-12-30 contains 10 elements. The PUT statement is used to show value in log window.
 
+To display date in WORD format
+1. Short Word Date Format
 
+The format date9. returns 30DEC2016.
+format dt date9.;
 
+2. Complete Word Date Format
 
+The format WORDDATE. returns DECEMBER 30, 2016. No need to specify width in this format. It automatically adjusts the width depending on the month.
 
+*Example - to format  word date returns date format( full name)  without including days*
+
+format dt WORDDATE.;
+
+3. Including WEEK
+
+The format WEEKDATE. gives Friday, December 30, 2016
+
+*Example - to format  word date returns date, days format( full name) *
+	
+format dt WEEKDATE.;	
+	
+Display DAY / MONTH / YEAR
+
+In this section, we will see how we can write only day, month, year and weekday.
+data _null_;
+dt=today();
+put "Day :"  dt  DAY.;
+put "Month :" dt MONTH.;
+put "YEAR:" dt YEAR.;
+put "WEEKDAY:" dt DOWNAME.;
+run;
+
+We can also use FORMAT in the PUT statement without specifying FORMAT statement explicitly. The DAY. format returned 30, MONTH. format returned 12 and YEAR. format returned 2016. In addition, we have used DOWNAME. format to extract weekday (Friday).	
+	
+	
+Other Popular Formats
+
+Some of the commonly used date formats are listed below -
+Formats	Result
+DDMMYYP10.	30.12.2016
+DDMMYYS10.	30/12/2016
+MMDDYYP10.	12.30.2016
+MMDDYYS10.	12/30/2016
+WORDDATX19.	30 DECEMBER 2016
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
