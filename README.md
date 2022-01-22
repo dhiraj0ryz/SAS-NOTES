@@ -1532,7 +1532,11 @@ It is equivalent to STRIP function. It first removes leading spaces and then tra
 
 7. CAT Function
 
+
 It concatenates character strings. It is equivalent to || sign.
+
+*Example - concatenate function - strings character*
+
 data _null_;
 a = 'abc';
 b = 'xyz';
@@ -1544,6 +1548,9 @@ run;
 Both c and d returns "abcxyz".
 
 Concatenate String and Numeric Value
+
+*Example - concatenate function - strings character*
+
 data _null_;
 x = "Temp";
 y = 22;
@@ -1552,7 +1559,7 @@ z1 = cats(x,y);
 z2 = catx("",x,y);
 put z = z1= z2 =;
 run;
-z = Temp          22 
+z = Temp  22 
 z1=Temp22 
 z2=Temp 22
 
@@ -1561,6 +1568,272 @@ Note -
 The || keyword inserts multiple spaces when numeric and text values are concatenated.
 CATS strips both leading and trailing blanks, and does not insert separators.
 CATX strips both leading and trailing blanks, and inserts separators. The first argument to CATX specifies the separator.
+
+
+8. SCAN Function
+
+It extracts words within a value that is marked by delimiters.
+SCAN( text, nth word, <delimiters>)
+For example : 
+
+We wish to extract first word in a sentence 'Hi, How are you doing?'. In this case, delimiter is a blank.
+data _null_;
+string='Hi, How are you doing?';
+first_word=scan(string, 1, ' ' );
+put first_word =;
+run;
+
+last_word returns 'doing?' since it is the last word in the above sentence.
+
+Let's make it a little complicated.
+
+Suppose, delimiter is a character instead of blank or special sign.
+string='Hello SAS community people';
+beginning= scan( string, 1, 'S' ); ** returns "Hello ";
+middle = scan( string, 2, 'S' ); ** returns "A";
+end= scan( string, 3, 'S' ); **returns " community people";
+	
+	
+9. SUBSTR
+
+It extracts strings based on character position and length. It is equivalent to MS Excel's MID Function.
+= substr(old_var, starting_position, number of characters to keep);
+Examples :
+t="AFHood Analytics Group";
+new_var=substr(t,8,9);
+Result : Analytics
+
+10. SUBSTR(Left of =) Function
+
+It replaces a portion of string with new string
+substr("old_variable",1,8) = new_data;
+Result : New_dataable
+	
+11. LOWCASE, UPCASE and PROPCASE
+
+LOWCASE converts the character string to lowercase.
+
+UPCASE converts the character string to uppercase.
+
+PROPCASE returns the word having uppercase in the first letter and lowercase in the rest of the letter (sentence format).
+
+12. INDEX Function
+
+It finds characters or words in a character variable
+
+*Example - Index function to find the character or words in a character variable*
+
+data _null_;
+string='Hi,How are you doing?';
+x = index(string, "How");
+put x=;
+run;
+	
+x returns 4 as "How" starts from 4th character.
+
+To select all the records having 'ian' in their character.
+if index(name,'ian') > 0;
+To select all the records having first letter 'H'
+if name =: 'H';
+	
+13. FIND Function
+
+To locate a substring within a string
+
+FIND (character-value, find-string <,'modifiers'> <,start>)
+
+STRING1 = "Hello hello goodbye"
+
+Examples :
+
+1.  FIND(STRING1, "hello") returns 7
+
+2.  FIND("abcxyzabc","abc",4) 7
+
+
+14. TRANWRD Function
+
+It replaces all occurrences of a word in a character string. It doesn't replace full phrase (entire value content).
+TRANWRD (variable name, find what , replace with)
+
+*Example - TRANWRD function to find and replace word/numbers in character*
+
+Example :  name : Mrs. Joan Smith
+name=tranwrd(name, "Mrs.", "Ms.");
+Result : Ms. Joan Smith
+
+
+15. TRANSLATE Function
+
+It replaces specific characters in a character expression
+TRANSLATE(source, replace with, find what)
+Examples:
+
+x = translate('XYZW','AB','VW');
+
+Result :  "XYZB"
+
+Difference between TRANWRD and TRANSLATE Functions
+
+The TRANSLATE function converts every occurrence of a user-supplied character to another character. TRANSLATE can scan for more than one character in a single call. In doing this, however, TRANSLATE searches for every occurrence of any of the individual characters within a string. That is, if any letter (or character) in the target string is found in the source string, it is replaced with the corresponding letter (or character) in the replacement string. 
+The TRANWRD function differs from TRANSLATE in that it scans for words (or patterns of characters) and replaces those words with a second word (or pattern of characters).
+
+16. PRXMATCH
+
+It can be used for the following cases :
+When you want to identify if there is alphanumeric (has any letter from A to Z) in a variable.
+If you need to search a character variable for multiple different substrings.
+PRXMATCH (perl-regular-expression, source);
+Perl Regular Expression
+^ - start with 
+$ - end with 
+\D - any non digits 
+\d - digits 
+? - may or may not have? 
+| - or 
+* - repeating 
+( i:) - turns ON the case insensitive search
+(-i:) - turn OFF the case insensitive search
+
+1. Check alphanumeric value
+
+DATA test;
+INPUT string $ 1-8;
+prxmatch=prxmatch("/[a-zA-Z]/",string);
+CARDS;
+ACBED
+11
+12
+zx
+11 2c
+abc123
+;
+run; 
+
+Note : prxmatch("/[a-zA-Z]/",string) checks first character.
+
+
+2. Replace multiple words with a new word
+if prxmatch('/Luthir|Luthr|Luther/',name) then name='Luthra' ;
+
+17. INPUT and PUT Function
+
+INPUT Function is used to convert character variable to numeric.
+
+*Example - Input function to convert character variable to numberic, x = '12345' (string) which is converted into no( under new_x)*
+	
+new_num=input(character-variable, 4.);
+Example - 
+data temp;
+x = '12345';
+new_x = input(x,5.);
+run;
+In the above example, the variable x is a character variable as it is defined in quotes '12345'. The newly created variable new_x is in numeric format.
+
+PUT Function is used to convert numeric variable to character.
+
+*Example - Put function to convert numberic character  to  variable, x = 12345 (numberic) which is converted into string ( under new_x)*
+	
+new_char=put(numeric,4.0);
+data temp;
+x = 12345;
+new_x = put(x,5.);
+run;
+In this example, the variable x is originally in numeric format and later converted to character in the new variable new_x.
+
+*Example - To find length of the string*
+
+18. LENGTH
+It return length of a string.
+
+*Example - To find length of the string*
+
+data _null_;
+x='ABCDEF-!1.234';
+n= length(x);
+put n=;
+run;
+It returns 13.
+
+If you need to calculate the number of digits in a numeric variable -
+
+First, we need to convert our numeric variable to character to count the number of digits as LENGTH function works only for character variable.
+
+*Example - To find length of the numeric value first convert the numeric value into string  using PUT function and then find the length*
+
+data _null_;
+x = 12345;
+cnt = length(strip(put(x,12.)));
+put cnt=;
+run;
+In the above nested function, we first converted the variable x to character and then remove spaces by using STRIP function and then count number of digits by using LENGTH() function.
+
+Another Method -
+data _null_;
+x = 12345;
+cnt = int(log10(x)) + 1;
+put cnt=;
+run;
+We can also use LOG10 function to solve it. LOG10 has a property which says :
+Number of Digits = Integer value of [LOG10(x)] + 1. For example, LOG10(100) = 2 so Number of digits in 100 = 2 +1. See LOG10(1100) = 3.04 => INT(3.04) = 3 => 3+1 = Number of digits in 1100.
+
+
+19. IF THEN
+
+It replaces entire phrase.
+
+20. COUNT Function
+
+
+It counts the number of times that a specified substring appears within a character string.
+
+*Example - To count the number of times a specified substring appears within a character string.*
+		
+data _null_;
+name = "DeepAnshu Bhalla";
+x = count(name,"a");
+x1 = count(name,"a","i");
+put x= x1=;
+run;
+Result :  x=2 as there are 2 lower case 'a's in the variable name. x1=3 as there are 3 'a's in the variable name (The 'i' modifier ignores case sensitivity)
+
+21. COUNTW Function
+
+	
+It counts the number of words in a character string.
+
+*Example - It counts the number of words in a character string.*
+data readin;
+input name$15.;
+cards;
+Trait Jhonson
+3+3=6
+;
+run;
+
+data out;
+set readin;
+x = countw(name);
+x1 = countw(name,' ');
+proc print;
+run;
+
+Output : COUNTW Function
+ If you don't specify delimiter in the second parameter of COUNTW function, it would automatically special characters as a delimiter.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
