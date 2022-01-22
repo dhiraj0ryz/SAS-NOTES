@@ -1458,34 +1458,109 @@ run;
 
 It removes leading and trailing spaces.
 
-*example - STRIP function toremoves leading and trailing spaces*
+*Example - STRIP function toremoves leading and trailing spaces*
 
 Data char1;
 Set char;
 char1 = strip(Name);
 run;
 
-COMPRESS Function
+
+3. COMPRESS Function
 
 SYNTAX 
 COMPRESS(String, characters to be removed, Modifier)
 
 
+Default - It removes leading, between and trailing spaces
+
+*Example - STRIP function remmoves leading, between, trailing spaces*
+
+Data char1;
+Set char;
+char1 = compress(Name);
+run;
 
 
+*Example - STRIP function to remove specific characters*
+chart1 - compress all spaces & chart2 = removes those certain character mentioned ( example - compress(char1,',')
+
+Data char1;
+Set char;
+char1 = compress(Name);
+char2 = compress(char1,',');put string;
+run;
+
+In SAS 9.1.3, the additional parameter called MODIFIER was added to the function.
+
+The following keywords can be used as modifiers-
+a – Remove all upper and lower case characters from String.
+ak - Keep only alphabets from String.
+kd - Keeps only numeric values
+d – Remove numerical values from String.
+i – Remove specified characters both upper and lower case from String.
+k – keeps the specified characters in the string instead of removing them.
+l – Remove lowercase characters from String.
+p – Remove Punctuation characters from String.
 
 
+Example 1 : Keep only alphabets from alphanumeric values
+data _null_;
+x='ABCDEF-!1234';
+string=compress(x,'','ak');put string=;
+run;
 
+4. LEFT Function
 
+It moves leading blanks to the end of the value. The length of the string does not change.
+Data char1;
+Set char;
+char1 = left(Name);
+run;
 
+5. TRIM Function
 
+It removes trailing spaces.
+Data char1;
+Set char;
+char1 = trim(Name);
+run;
 
+6. TRIM(LEFT(string))
 
+It is equivalent to STRIP function. It first removes leading spaces and then trailing spaces.
 
+7. CAT Function
 
+It concatenates character strings. It is equivalent to || sign.
+data _null_;
+a = 'abc';
+b = 'xyz';
+c= a || b;
+d= cat(a,b);
+put c= d =;
+run;
 
+Both c and d returns "abcxyz".
 
+Concatenate String and Numeric Value
+data _null_;
+x = "Temp";
+y = 22;
+z = x||y;
+z1 = cats(x,y);
+z2 = catx("",x,y);
+put z = z1= z2 =;
+run;
+z = Temp          22 
+z1=Temp22 
+z2=Temp 22
 
+Note -
+
+The || keyword inserts multiple spaces when numeric and text values are concatenated.
+CATS strips both leading and trailing blanks, and does not insert separators.
+CATX strips both leading and trailing blanks, and inserts separators. The first argument to CATX specifies the separator.
 
 
 
