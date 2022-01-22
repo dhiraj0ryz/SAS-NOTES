@@ -1340,6 +1340,136 @@ proc print;
 var _character_;
 run;
 
+11.01 - SAS : WILDCARD CHARACTER
+
+Example 1 : Keep all the variables start with 'X'
+
+DATA READIN;
+INPUT ID X1 X_T $;
+CARDS;
+2 3 01
+3 4 010
+4 5 022
+5 6 021
+6 7 032
+;
+RUN;
+
+DATA READIN2;
+SET READIN (KEEP = X:);
+RUN;
+
+Example 2 : Subset data using wildcard character
+DATA READIN2;
+SET READIN;
+IF X_T =: '01';
+RUN;
+
+In this case, the COLON (:) tells SAS to select all the cases starting with the character '01'.
+
+Example 3 : Use of WildCard in IN Operator
+DATA READIN2;
+SET READIN;
+IF X_T IN: ('01', '02');
+RUN;
+
+
+In this case, the COLON (:) tells SAS to select all the cases starting with the character '01' and '02'.
+
+Example 4 : Use of WildCard in GT LT (> <) Operators
+DATA READIN2;
+SET READIN;
+IF X_T >: '01';
+RUN;
+
+
+In this case, the COLON (:) tells SAS to select all the cases from character '01' up alphabetically.
+
+Example 5 : WildCard in Function
+data example3;
+set temp2;
+total =sum(of height:);
+run;
+
+Example 6 : WildCard in Array
+proc sort data = sashelp.class out=class;
+by name sex;
+run;
+
+proc transpose data = sashelp.class out=temp;
+by name sex;
+var height weight;
+run;
+
+
+proc transpose data = temp delimeter=_ out=temp2(drop=_name_);
+by name;
+var col1;
+id _name_ sex;
+run;
+
+proc sql noprint;
+select CATS('new_',name) into: newnames separated by " "
+from dictionary.columns
+where libname = "WORK" and memname = "TEMP2" and name like "Height_%";
+quit;
+
+
+data temp2;
+set temp2;
+array h(*) height:;
+array newh(*) &newnames.;
+do i = 1 to dim(h);
+newh{i} = h{i}*2;
+end;
+drop i;
+run;
+
+12.01 - SAS : CHARACTER FUNCTIONS
+
+1. COMPBL Function
+
+It compresses multiple blanks to a single blank.
+
+In the example below, the Name variable contains a record "Sandy   David". It has multiple spaces between the first and last name.
+
+Create a dummy data
+
+*example - COMPBL function to compress multiple blanks to a single blank*
+
+Data char;
+Input Name $ 1-50 ;
+Cards;
+Sandy    David
+Annie Watson
+Hello ladies and gentlemen
+Hi, I am good
+;
+Run;
+
+Use COMPBL Function
+
+Data char1;
+Set char;
+char1 = compbl(Name);
+run;
+
+2. STRIP Function
+
+It removes leading and trailing spaces.
+
+*example - STRIP function toremoves leading and trailing spaces*
+
+Data char1;
+Set char;
+char1 = strip(Name);
+run;
+
+COMPRESS Function
+
+SYNTAX 
+COMPRESS(String, characters to be removed, Modifier)
+
 
 
 
