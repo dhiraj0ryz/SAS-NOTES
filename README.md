@@ -2054,3 +2054,48 @@ weekdays = intck('WEEKDAY1W', '11DEC2016'd ,'18DEC2016'd);
 proc print;
 run;
 
+WEEKDAY1W implies sunday as weekend (1=Sunday, 2= MONDAY... 7=Saturday)
+	
+*Example - Using intck function to find no of weekdays within a given period. 1 = sunday, 2 = Monday hence to use monday and wednesday as custom weekday use command : WEEKDAY24W*
+
+data eg;
+weekdays = intck('WEEKDAY24W', '11DEC2016'd ,'16DEC2016'd);
+proc print;
+run;
+WEEKDAY24W means MONDAY and WEDNESDAY are weekends. The above function returns 3	
+	
+Calculate between Datetime values
+
+Suppose you need to calculate hours, minutes and seconds between two datetime values.
+
+data temp2;
+hours=intck('hour','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
+minutes=intck('minute','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
+seconds=intck('second','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
+proc print noobs;
+run;	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
