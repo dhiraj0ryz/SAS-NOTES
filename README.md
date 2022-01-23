@@ -2068,7 +2068,7 @@ Calculate between Datetime values
 
 Suppose you need to calculate hours, minutes and seconds between two datetime values.
 
-Example - Using intck function to calculate hours, minutes and seconds between two datetime values.*
+*Example - Using intck function to calculate hours, minutes and seconds between two datetime values.*
 
 data temp2;
 hours=intck('hour','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
@@ -2113,6 +2113,7 @@ INTNX : Examples
 
 In the following code, we are adding seven days to 02 January 2017.
 data temp;
+
 mydate = '02JAN2017'd;
 day=intnx('day', mydate , 7);
 format mydate day date9.;
@@ -2125,12 +2126,13 @@ day = mydate + 7;
 
 In this case, we need to find answer of the question 'when is next sunday?'. The 02January,2017 is Monday.
 data temp;
+
 mydate = '02JAN2017'd;
 nextsunday=intnx('week', mydate , 1);
 format mydate nextsunday date9.;
 run;	
 	
-	
+It returns 08JAN2017 as it aligns to the 'beginning' period. The 'beginning' alignment is default in INTNX function. In other words, if you change the mydate to '04JAN2017'd, it still returns '08JAN2017' as the next sunday would be same within this week interval. 	
 	
 	
 	
