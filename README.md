@@ -2068,6 +2068,8 @@ Calculate between Datetime values
 
 Suppose you need to calculate hours, minutes and seconds between two datetime values.
 
+Example - Using intck function to calculate hours, minutes and seconds between two datetime values.*
+
 data temp2;
 hours=intck('hour','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
 minutes=intck('minute','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
@@ -2075,7 +2077,14 @@ seconds=intck('second','01jan2016:10:50:00'dt,'01jan2016:11:55:00'dt);
 proc print noobs;
 run;	
 	
-	
+Time Difference
+
+data temp3;
+hours=intck('hour','12:00:00't, '23:05:00't);
+minutes=intck('minute','12:00:00't,'23:05:00't);
+seconds=intck('second','12:00:00't,'23:05:00't);
+proc print noobs;
+run;	
 	
 	
 	
