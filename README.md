@@ -1932,6 +1932,18 @@ MMDDYYS10.	12/30/2016
 WORDDATX19.	30 DECEMBER 2016
 	
 14.01 - SAS : INTCK FUNCTION WITH EXAMPLES
+	
+	
+The INTCK is one of the most important date function that is used to calculate the difference between two dates, two times or two datetime values.
+
+The following is a list of common real-world examples where INTCK is used -
+Calculation of individual's age
+Tenure of an employee with company
+Customer's tenure with the organization
+Number of working days
+Number of hours spent on a particular course
+Number of quarterly payments paid
+
 
 The syntax of INTCK is defined below -
 
@@ -1965,17 +1977,48 @@ no_of_days  = intck ('DAY', date1, date2);
 format date1 date2 date9.;
 proc print data = temp noobs;
 run;
+
+Custom Intervals
+
+Suppose you are asked to calculate the number of 4 months interval between two dates -
+data temp;
+date1 = '01JAN2015'd;
+date2 = '01JAN2017'd;
+no_of_4months  = intck ('MONTH4', date1, date2);
+run;
+The MONTH4 interval implies interval is of 4 months. It is equal to the number of months divided by 4. Don't confuse it with QUARTERS. QUARTERS is equal to interval of 3 months. Remember 4 Quarters in an year.
+
 	
+Set Starting Point for Calculation
+
+*Example - Using intck function to find the no of times certain mount appears ( count of month). 
+data temp;
+date1 = '31JAN2015'd;
+date2 = '31DEC2016'd;
+diff  = intck ('YEAR', date1, date2);
+diff2  = intck ('YEAR.3', date1, date2);
+format date1 date2 date9.;
+proc print;
+run;	
 	
+How it works :
+intck ('YEAR', date1, date2) - It checks number of times first of January appears as first of january is set as a starting point by default. The variable diff returns 1 as it includes only 01JAN 2016.
+intck ('YEAR.3', date1, date2) - It checks number of times first of March appears as YEAR.3 refers to the period starting from 1st of March to end of February next year. The variable diff2 returns 2 as it includes 01 March 2015 and 01March 2016.
 	
+
+Is it a month difference?
+
+INTCK says there is a month difference between 25OCT2016 and 03NOV2016. But there is no month difference between 01OCT2016 and 31OCT2016. How?
+
+*Example - Using intck function to find the no of times certain mount appears ( count of month). 
+
+data temp;
+month1= intck('month', '25OCT2016'd, '03NOV2016'd);
+month2= intck('month', '01OCT2016'd, '31OCT2016'd);
+proc print;
+run;	
 	
-	
-	
-	
-	
-	
-	
-	
+INTCK checks whether the first day of the month lies with in the range. In the first case, 01 November falls between October 25 and November 03 so it returns 1. In the second case, it returns 0 as 01 November does not fall between 01OCT2016 and 31OCT2016.
 	
 	
 	
