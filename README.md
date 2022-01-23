@@ -2021,7 +2021,16 @@ run;
 INTCK checks whether the first day of the month lies with in the range. In the first case, 01 November falls between October 25 and November 03 so it returns 1. In the second case, it returns 0 as 01 November does not fall between 01OCT2016 and 31OCT2016.
 	
 	
-	
+How to correct it?
+
+Add one more parameter at end of INTCK function. In the parameter, specify 'C' which refers to continuous method for calculation.
+data temp;
+month1= intck('month', '25OCT2016'd, '03NOV2016'd, 'C');
+proc print;
+run;
+The above function returns 0.
+
+The CONTINUOUS method calculates continuous time from the start-of-period date specified in the second parameter of INTCK function.	
 	
 	
 	
