@@ -2138,6 +2138,138 @@ run;
 	
 It returns 08JAN2017 as it aligns to the 'beginning' period. The 'beginning' alignment is default in INTNX function. In other words, if you change the mydate to '04JAN2017'd, it still returns '08JAN2017' as the next sunday would be same within this week interval. 	
 	
+If you want to add exactly 1 week to the date, you can use the 'sameday' in the fourth parameter of this function. See the statement below -
+
+nextsunday=intnx('week', mydate , 1, 'sameday'); returns 09JAN2017	
+	
+3. Get First Date
+
+Suppose you need to find out the first day of a specific day. For example, today is 09January, 2017 and the first day of this date is 01January,2017.
+
+data temp;
+set sashelp.citiday;
+firstday=intnx('month', date , 0);
+format firstday date9.;
+proc print data = temp;
+var date firstday;
+run;
+	
+	
+4. When was Last Tuesday?
+
+It is tricky to figure out the date when it was last tuesday. 13January,2017 is Friday. In real world dataset, we don't have the exact days of a list of dates when we need to code to get the last tuesday.
+
+data temp;
+mydate = '10JAN2017'd;
+lasttuesday = intnx('week.4', mydate , -1, 'end');
+format mydate lasttuesday date9.;
+proc print;
+run;
+	
+It returns 03JAN2017 which is previous tuesday.  See the changes we have made in this program -
+
+-1 instead of 0 as increment value
+'end' instead of 'beginning' as date alignment
+'week.4' instead of 'week.3' to figure out the last tuesday	
+	
+5. Adjustment within the Interval
+
+This program explains how INTCK function adjusts / align dates within the interval specified.
+data temp;
+mydate = '31JAN2017'd;
+beginning=intnx('year ', mydate , 1, 'b');
+middle=intnx('year ', mydate , 1, 'm');
+end=intnx('year ', mydate , 1, 'e');
+sameday=intnx('year ', mydate , 1, 's');
+format mydate beginning middle end sameday date9.;
+proc print;
+run;	
+	
+The abbreviation 'b' refers to beginning, 'm' - middle,  'e' - end, 's' - sameday. The default value is 'b' if you don't specify anything in the fourth parameter.
+
+Result
+beginning = 01JAN2018
+middle = 02JUL2018
+end = 31DEC2018
+sameday = 31JAN2018	
+	
+	
+6. Datetime Formats
+
+Like date formats, we can use time and datetime formats in INTNX function to increment time (seconds / minutes / hours).
+data temp;
+mydt = '29JAN2017:08:34:00'dt;
+seconds=intnx('second', mydt , 1);
+minutes=intnx('minute', mydt , 1);
+hours=intnx('hour', mydt , 1);
+days=intnx('dtDay', mydt , 1);
+weeks=intnx('dtWeek', mydt , 1);
+format mydt seconds minutes hours days weeks datetime20.;
+proc print NOOBS;
+run;	
+	
+16.01 - MISSING VALUES IN SAS
+In SAS, Numeric and Character missing values are represented differently.
+
+Numeric Missing Values
+
+SAS stores 28 missing values in a numeric variable. They are as follows :
+
+dot-underscore  . _ 
+dot .
+.A through .Z ( Not case sensitive)
+
+Sorting Order : dot- underscore is the lowest valued missing value. After the dot-underscore, comes the dot, and then the dot-A. The dot-Z is the highest valued missing value.	
+	
+	
+Run the following code and see how SAS treats them missing value
+data temp;
+input x;
+cards;
+1
+2
+3
+.
+.A
+.X
+.Z
+._	
+4
+;
+run;
+
+proc freq;
+table x;
+run; 	
+	
+	
+Check for missing numeric values
+
+The following code checks for dot missing value only. It does not check for other 27 special numeric missing values (._ , .A through .Z)
+If x =. then PUT "x is missing";
+The following code checks for all 28 numeric missing values (.  , ._ , .A through .Z)
+If x <=.z then PUT "x is missing";	
+	
+The MISSING function accepts either a character or numeric variable as the argument and returns the value 1 if the argument contains a missing value or zero otherwise.
+If missing(x) then PUT "x is missing";	
+	
+Character missing values
+
+Character missing values are represented by a single blank enclosed in quotes ' '.
+If y = ' ' then put "y is missing";
+If missing(y) then put "y is missing";	
+	
+Working with Missing Values
+
+Suppose we have a data set containing three variables - X, Y and Z. They all have some missing values. We wish to compute sum of all the variables.
+
+	data mydata2;
+set mydata;
+a=sum(x,y,z);
+p=x+y+z;
+run;
+	
+	
 	
 	
 	
