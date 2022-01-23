@@ -2086,16 +2086,49 @@ seconds=intck('second','12:00:00't,'23:05:00't);
 proc print noobs;
 run;	
 	
+15.01 - INTNX Function with Examples	
+
+SAS INTNX : Introduction
+
+SAS function INTNX is used to increment SAS date by a specified number of intervals. It helps to answer the following questions.	
+Examples 
+When is next Monday?
+When was last Friday?
+What would be date after 21 weeks?
+Subtract 2 quarters from the current date
+	
+SAS INTNX Syntax
+
+The first three parameters of the INTNX function is mandatory and the fourth one is optional.
+INTNX(interval, start-from, increment,  [alignment])
+Interval is the unit of measurement. The intervals can be days, weeks, months, quarters, years.
+Start-from is a SAS date value which would be incremented.
+Increment is number of intervals by which date is incremented. It can be zero, positive or negative. Negative value refers to previous dates.
+Alignment [Optional Parameter] is where datevalue is aligned within interval prior to being incremented. The values you can specify - 'beginning', 'middle', 'end', 'sameday'. Default value - 'beginning'.	
 	
 	
+INTNX : Examples
+
+1. Add 7 days to a specific date
+
+In the following code, we are adding seven days to 02 January 2017.
+data temp;
+mydate = '02JAN2017'd;
+day=intnx('day', mydate , 7);
+format mydate day date9.;
+run;	
 	
+If you are wondering how INTNX is different to 'simply adding 7 to mydate variable' like code below. You would get answer to this question in the next example.
+day = mydate + 7;	
 	
-	
-	
-	
-	
-	
-	
+2. Find Next Sunday
+
+In this case, we need to find answer of the question 'when is next sunday?'. The 02January,2017 is Monday.
+data temp;
+mydate = '02JAN2017'd;
+nextsunday=intnx('week', mydate , 1);
+format mydate nextsunday date9.;
+run;	
 	
 	
 	
