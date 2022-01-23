@@ -1991,7 +1991,7 @@ The MONTH4 interval implies interval is of 4 months. It is equal to the number o
 	
 Set Starting Point for Calculation
 
-*Example - Using intck function to find the no of times certain mount appears ( count of month). 
+*Example - Using intck function to find the no of times certain month appears in a year ( count of month). 
 data temp;
 date1 = '31JAN2015'd;
 date2 = '31DEC2016'd;
@@ -2010,7 +2010,7 @@ Is it a month difference?
 
 INTCK says there is a month difference between 25OCT2016 and 03NOV2016. But there is no month difference between 01OCT2016 and 31OCT2016. How?
 
-*Example - Using intck function to find the no of times certain mount appears ( count of month). 
+*Example - Using intck function to find the no of times certain month appears  ( count of month). 
 
 data temp;
 month1= intck('month', '25OCT2016'd, '03NOV2016'd);
@@ -2025,6 +2025,7 @@ How to correct it?
 
 Add one more parameter at end of INTCK function. In the parameter, specify 'C' which refers to continuous method for calculation.
 data temp;
+
 month1= intck('month', '25OCT2016'd, '03NOV2016'd, 'C');
 proc print;
 run;
@@ -2032,7 +2033,24 @@ The above function returns 0.
 
 The CONTINUOUS method calculates continuous time from the start-of-period date specified in the second parameter of INTCK function.	
 	
-	
-	
+Calculating Weekdays
 
+
+Suppose you are asked to calculate the number of weekdays -
+data eg;
+
+*Example - Using intck function to find no of weekdays within a given period.*
+weekdays = intck('WEEKDAY', '11DEC2016'd ,'18DEC2016'd);
+proc print;
+run;
+It returns 5. In this case, saturday and sunday are considered weekends and excluding from the calculation.	
+	
+Define 6 days working
+*Example - Using intck function to find no of weekdays within a given period.( including saturday as working day)*
+
+If you need to calculate number of working days between 2 dates considering 6 weekdays -
+data eg;
+weekdays = intck('WEEKDAY1W', '11DEC2016'd ,'18DEC2016'd);
+proc print;
+run;
 
