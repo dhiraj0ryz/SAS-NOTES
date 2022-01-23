@@ -1931,6 +1931,42 @@ MMDDYYP10.	12.30.2016
 MMDDYYS10.	12/30/2016
 WORDDATX19.	30 DECEMBER 2016
 	
+14.01 - SAS : INTCK FUNCTION WITH EXAMPLES
+
+The syntax of INTCK is defined below -
+
+INTCK(date-or-time-interval, start-date-or-time, end-date-or-time, [method])
+1. date-or-time-interval : Date or time period needs to be defined in the first parameter. For eg. MONTH, YEAR, QTR, WEEK, HOUR, MINUTE etc. Specify period in single quotes
+
+2. start-date-or-time : Starting date or time to calculate the number of periods.
+
+3. end-date-or-time : End date or time to calculate the number of periods.
+
+4. method : Optional Parameter. Method to calculate the difference. Methods are 'CONTINUOUS' or 'DISCRETE'. By default, it is DISCRETE.
+	
+The 'YEAR' keyword tells SAS to calculate the number of intervals between dates in terms of year. Since 01JAN2015 is a starting date, it is specified in the INTCK function before 01JAN2017. The FORMAT statement is used to display datevalues in date format when we print our results.	
+	
+Other alias of year - 'YEARS' and 'YR'-
+no_of_years  = intck ('YEARS', date1, date2)
+no_of_years  = intck ('YR', date1, date2)	
+	
+SAS INTCK Examples
+
+Like calculation of years, we can use other intervals such as semiyear, quarter, month, week, day. The examples of these intervals are displayed below -
+data temp;
+date1 = '01JAN2015'd;
+date2 = '01JAN2017'd;
+no_of_years  = intck ('YEAR', date1, date2);
+no_of_semiyears  = intck ('SEMIYEAR', date1, date2);
+no_of_quarters  = intck ('QUARTER', date1, date2);
+no_of_months  = intck ('MONTH', date1, date2);
+no_of_weeks  = intck ('WEEK', date1, date2);
+no_of_days  = intck ('DAY', date1, date2);
+format date1 date2 date9.;
+proc print data = temp noobs;
+run;
+	
+	
 	
 	
 	
