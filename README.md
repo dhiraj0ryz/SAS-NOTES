@@ -2114,6 +2114,8 @@ INTNX : Examples
 In the following code, we are adding seven days to 02 January 2017.
 data temp;
 
+*Example - Using intnx function to find the next date by adding a certain days to current date.*
+
 mydate = '02JAN2017'd;
 day=intnx('day', mydate , 7);
 format mydate day date9.;
@@ -2126,6 +2128,8 @@ day = mydate + 7;
 
 In this case, we need to find answer of the question 'when is next sunday?'. The 02January,2017 is Monday.
 data temp;
+
+*Example - Using intnx function to find the date of upcoming sunday (1).*
 
 mydate = '02JAN2017'd;
 nextsunday=intnx('week', mydate , 1);
