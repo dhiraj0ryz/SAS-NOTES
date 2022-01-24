@@ -2209,6 +2209,7 @@ proc print NOOBS;
 run;	
 	
 16.01 - MISSING VALUES IN SAS
+
 In SAS, Numeric and Character missing values are represented differently.
 
 Numeric Missing Values
@@ -2263,7 +2264,7 @@ Working with Missing Values
 
 Suppose we have a data set containing three variables - X, Y and Z. They all have some missing values. We wish to compute sum of all the variables.
 
-	data mydata2;
+data mydata2;
 set mydata;
 a=sum(x,y,z);
 p=x+y+z;
